@@ -1,0 +1,20 @@
+[project]
+name = "pa-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "google-auth>=2.40.3",
+    "google-auth-oauthlib>=1.2.2",
+    "langchain-google-community[gmail]>=2.0.7",
+    "langchain[google-genai,openai]>=0.3.27",
+    "langfuse>=3.3.4",
+    "langgraph-checkpoint-sqlite>=2.0.11",
+    "langgraph>=0.6.7",
+    "python-dotenv>=1.1.1",
+    "streamlit>=1.49.1",
+    "watchdog>=6.0.0",
+    "streamlit-oauth>=0.1.11",
+    "langchain-mcp-adapters>=0.1.9",
+]
