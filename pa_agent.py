@@ -3,19 +3,19 @@ load_dotenv()
 
 import os
 
-
+import streamlit as st
 from langgraph.graph import START, END
 
 # from langchaingoogle_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph
-from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from langgraph.prebuilt import ToolNode, tools_condition
 
 from langchain_google_community import GmailToolkit
 
 import config as cfg
 from mystate import MyState
-from db import get_sqlit_conn
+from db import get_sqlite_conn
 from llm_openai import llm_openai
 
 from google.oauth2.credentials import Credentials
@@ -23,12 +23,6 @@ from googleapiclient.discovery import build
 
 from langchain_mcp_adapters.client import MultiServerMCPClient 
 
-client = {
-    "F1_MCP": {
-        "url": "http://localhost:8000/mcp/",
-        "transport": "sse",
-    }
-}
 
 class MyGraph():
 
@@ -36,14 +30,15 @@ class MyGraph():
         self.llm = llm_openai
         self.llm_with_tools = None
         self.tools_binded = False
-        self.conn = get_sqlit_conn()
-        self.memory = SqliteSaver(self.conn)
+        # self.conn = get_sqlit_conn()
+        self.memory = None
         self.gmail_token = gmail_token
-        self.graph = self._build_graph()
-        
+        self.graph = None
+    
 
-    def _build_graph(self):
-
+    async def build_graph(self):
+        mem = await get_sqlite_conn()
+        self.memory = AsyncSqliteSaver(mem)
         graph_builder = StateGraph(MyState)
         if self.gmail_token:
             creds = Credentials(    
@@ -53,8 +48,17 @@ class MyGraph():
             )
             api_resource = build('gmail', 'v1', credentials=creds)
             toolkit = GmailToolkit(api_resource=api_resource)
-            toolnode = ToolNode(toolkit.get_tools())
-            self.llm_with_tools = self.llm.bind_tools(toolkit.get_tools())
+            client = MultiServerMCPClient(
+                {
+                "F1_MCP": {
+                    "url": "http://localhost:8000/mcp",
+                    "transport": "streamable_http",
+                    }
+                }
+            )
+            tools =  st.session_state.loop.run_until_complete(client.get_tools())
+            toolnode = ToolNode(tools)
+            self.llm_with_tools = self.llm.bind_tools(tools)
             graph_builder.add_node("chatbot", self.chatbot)
             graph_builder.add_node("tools", toolnode)
             graph_builder.add_edge(START, "chatbot")
@@ -64,18 +68,19 @@ class MyGraph():
             })
             self.tools_binded = True
             graph_builder.add_edge("tools", "chatbot")
-            mygraph = graph_builder.compile(checkpointer=self.memory)
-            return mygraph
+            self.graph = graph_builder.compile(checkpointer=self.memory)
         else:
             graph_builder.add_node("chatbot", self.chatbot)
             graph_builder.add_edge(START, "chatbot")
             graph_builder.add_edge("chatbot", END)
-            mygraph = graph_builder.compile(checkpointer=self.memory)
-            return mygraph
+            self.graph = graph_builder.compile(checkpointer=self.memory)
+    
+    async def get_chat_block(self, config):
+        return await self.graph.aget_state(config)
     
     def rebuild_graph(self, gmail_token):
         self.gmail_token = gmail_token
-        self.graph = self._build_graph()
+        st.session_state.loop.run_until_complete(self.build_graph())
 
     def chatbot(self, state: MyState):
         if self.tools_binded:
@@ -83,8 +88,8 @@ class MyGraph():
         else:
             return {"messages": self.llm.invoke(state["messages"])}
 
-    def invoke_graph(self, messages, config, callbacks):
+    async def invoke_graph(self, messages, config, callbacks):
         if callbacks: 
             config["callbacks"] = callbacks
-        response = self.graph.invoke({"messages": messages}, config)
+        response = await self.graph.ainvoke({"messages": messages}, config)
         return response

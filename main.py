@@ -7,19 +7,27 @@ from streamlit_oauth import OAuth2Component
 import config as cfg
 from pa_agent import MyGraph
 from st_callable_util import get_streamlit_cb
+import nest_asyncio
+
+nest_asyncio.apply()
+import asyncio
+
+if "loop" not in st.session_state:
+    st.session_state.loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(st.session_state.loop)
 
 
 if "config" not in st.session_state:
-    st.session_state.config = {"configurable": {"thread_id": "new-chat"}}
+    st.session_state.config = {"configurable": {"thread_id": "chat3"}}
 
 if "graph" not in st.session_state:
-
     st.session_state.graph = MyGraph()
+    st.session_state.loop.run_until_complete(st.session_state.graph.build_graph())
 
 if "messages" not in st.session_state:
-    block = st.session_state.graph.memory.get(st.session_state.config)
-    if block:
-        st.session_state.messages = block["channel_values"]["messages"]
+    current_state = st.session_state.loop.run_until_complete(st.session_state.graph.get_chat_block(st.session_state.config))
+    if current_state and current_state.values.get("messages"):
+        st.session_state.messages = current_state.values["messages"]
     else: 
         st.session_state.messages =  [AIMessage(content="Hello, How Can I help You !!")]
 
@@ -90,6 +98,6 @@ if prompt := st.chat_input():
 
     with st.chat_message("assistant"):
         st_callback = get_streamlit_cb(st.container())
-        response = st.session_state.graph.invoke_graph(st.session_state.messages, st.session_state.config, [st_callback])
+        response = st.session_state.loop.run_until_complete(st.session_state.graph.invoke_graph(st.session_state.messages, st.session_state.config, [st_callback]))
         last_msg = response["messages"][-1]
         st.session_state.messages.append(AIMessage(last_msg.content))

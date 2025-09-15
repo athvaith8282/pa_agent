@@ -1,8 +1,7 @@
-import sqlite3
+import aiosqlite
 from config import DB_PATH
 
-def get_sqlit_conn():
-
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-
+async def get_sqlite_conn():
+    # open async connection
+    conn = await aiosqlite.connect(DB_PATH)
     return conn

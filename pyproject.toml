@@ -17,4 +17,6 @@ dependencies = [
     "watchdog>=6.0.0",
     "streamlit-oauth>=0.1.11",
     "langchain-mcp-adapters>=0.1.9",
+    "aiosqlite>=0.21.0",
+    "nest-asyncio>=1.6.0",
 ]

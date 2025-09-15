@@ -8,4 +8,4 @@ from langchain_openai import ChatOpenAI
 #     disable_streaming = False
 # )
 
-llm_openai = ChatOpenAI(name="gpt-4o",streaming=True)
+llm_openai = ChatOpenAI(name="gpt-5",streaming=True)
