@@ -1,12 +1,12 @@
 import streamlit as st 
 import os
 import json
-from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage, SystemMessage
 from streamlit_oauth import OAuth2Component
 
 import config as cfg
 from pa_agent import MyGraph
-from st_callable_util import get_streamlit_cb
+from st_callable_util import get_streamlit_cb, get_langfuse_callback
 import nest_asyncio
 
 nest_asyncio.apply()
@@ -18,7 +18,7 @@ if "loop" not in st.session_state:
 
 
 if "config" not in st.session_state:
-    st.session_state.config = {"configurable": {"thread_id": "chat3"}}
+    st.session_state.config = {"configurable": {"thread_id": "new-chat"}}
 
 if "graph" not in st.session_state:
     st.session_state.graph = MyGraph()
@@ -29,7 +29,10 @@ if "messages" not in st.session_state:
     if current_state and current_state.values.get("messages"):
         st.session_state.messages = current_state.values["messages"]
     else: 
-        st.session_state.messages =  [AIMessage(content="Hello, How Can I help You !!")]
+        st.session_state.messages =  [
+            SystemMessage(content=cfg.SystemPrompt),
+            AIMessage(content="Hello, How Can I help You !!")
+        ]
 
 st.title("PERSONAL ASSISTENT")
 
@@ -98,6 +101,8 @@ if prompt := st.chat_input():
 
     with st.chat_message("assistant"):
         st_callback = get_streamlit_cb(st.container())
-        response = st.session_state.loop.run_until_complete(st.session_state.graph.invoke_graph(st.session_state.messages, st.session_state.config, [st_callback]))
+        langfuse_callback = get_langfuse_callback()
+        response = st.session_state.loop.run_until_complete(st.session_state.graph.invoke_graph(st.session_state.messages, st.session_state.config, [st_callback, langfuse_callback]))
         last_msg = response["messages"][-1]
         st.session_state.messages.append(AIMessage(last_msg.content))
+        st.write(last_msg.content)

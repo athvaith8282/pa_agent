@@ -1,11 +1,14 @@
-from langchain_openai import ChatOpenAI
+# from langchain_openai import ChatOpenAI
 
-# from langchaingoogle_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import ChatGoogleGenerativeAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-# llm = ChatGoogleGenerativeAI( 
-#     model="gemini-2.5-flash",
-#     disable_streaming = False
-# )
+llm_gemini = ChatGoogleGenerativeAI( 
+    model="gemini-2.5-flash",
+    model_kwargs={"streaming": True}
+)
 
-llm_openai = ChatOpenAI(name="gpt-5",streaming=True)
+# llm_openai = ChatOpenAI(name="gpt-5",streaming=True)

@@ -7,6 +7,24 @@ from streamlit.delta_generator import DeltaGenerator
 from langchain_core.callbacks.base import BaseCallbackHandler
 import streamlit as st
 
+from langfuse import Langfuse
+from langfuse.langchain import CallbackHandler
+
+import os
+
+
+def get_langfuse_callback():
+
+    langfuse = Langfuse(
+        secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+        public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+        host=os.getenv("LANGFUSE_HOST")
+    )
+
+    langfuse_handler = CallbackHandler()
+
+    return langfuse_handler
+
 
 # Define a function to create a callback handler for Streamlit that updates the UI dynamically
 def get_streamlit_cb(parent_container: DeltaGenerator) -> BaseCallbackHandler:

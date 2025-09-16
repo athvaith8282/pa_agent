@@ -16,24 +16,32 @@ from langchain_google_community import GmailToolkit
 import config as cfg
 from mystate import MyState
 from db import get_sqlite_conn
-from llm_openai import llm_openai
+from llm_openai import llm_gemini
 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 from langchain_mcp_adapters.client import MultiServerMCPClient 
 
+from langchain_chroma import Chroma
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain.tools.retriever import create_retriever_tool
 
 class MyGraph():
 
     def __init__(self, gmail_token=None):
-        self.llm = llm_openai
+        self.llm = llm_gemini
         self.llm_with_tools = None
         self.tools_binded = False
         # self.conn = get_sqlit_conn()
         self.memory = None
         self.gmail_token = gmail_token
         self.graph = None
+        self.chromadb = Chroma( 
+            collection_name="banner_health_blogs",
+            embedding_function=GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001"),
+            persist_directory=cfg.VEC_DB_PATH
+        )
     
 
     async def build_graph(self):
@@ -48,6 +56,7 @@ class MyGraph():
             )
             api_resource = build('gmail', 'v1', credentials=creds)
             toolkit = GmailToolkit(api_resource=api_resource)
+            gmail_tools = toolkit.get_tools()
             client = MultiServerMCPClient(
                 {
                 "F1_MCP": {
@@ -56,9 +65,25 @@ class MyGraph():
                     }
                 }
             )
-            tools =  st.session_state.loop.run_until_complete(client.get_tools())
-            toolnode = ToolNode(tools)
-            self.llm_with_tools = self.llm.bind_tools(tools)
+            f1_tools =  st.session_state.loop.run_until_complete(client.get_tools())
+            
+            retriever = self.chromadb.as_retriever(
+                search_kwargs = {"k": 5}
+            )
+
+            retriever_tool = create_retriever_tool( 
+                retriever= retriever,
+                name='retriever_health_blog_post',
+                description="""
+                Search and return documents relevant to
+                1.) How to beat afternoon slump by boosting energy
+                2.) How to manage carvings
+                3.) what to do about loctose_intolerance
+                """
+            )
+
+            toolnode = ToolNode(gmail_tools + f1_tools + [retriever_tool])
+            self.llm_with_tools = self.llm.bind_tools(gmail_tools + f1_tools + [retriever_tool])
             graph_builder.add_node("chatbot", self.chatbot)
             graph_builder.add_node("tools", toolnode)
             graph_builder.add_edge(START, "chatbot")
@@ -78,6 +103,11 @@ class MyGraph():
     async def get_chat_block(self, config):
         return await self.graph.aget_state(config)
     
+    # def flow_decider(self, state: MyState):
+    #     if messages := state.get("messages", []):
+    #         ai_message = messages[-1]
+    #     if hasattr(ai_message, "tool_calls") and len(ai_message.tool_calls) > 0:
+    
     def rebuild_graph(self, gmail_token):
         self.gmail_token = gmail_token
         st.session_state.loop.run_until_complete(self.build_graph())
@@ -92,4 +122,4 @@ class MyGraph():
         if callbacks: 
             config["callbacks"] = callbacks
         response = await self.graph.ainvoke({"messages": messages}, config)
-        return response
+        return response 

@@ -19,4 +19,8 @@ dependencies = [
     "langchain-mcp-adapters>=0.1.9",
     "aiosqlite>=0.21.0",
     "nest-asyncio>=1.6.0",
+    "langchain-google-genai==2.1.10",
+    "langchain-chroma==0.2.6",
+    "pypdf>=6.0.0",
+    "langchain-experimental>=0.3.4",
 ]
