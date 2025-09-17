@@ -15,7 +15,7 @@ from langchain_google_community import GmailToolkit
 
 import config as cfg
 from mystate import MyState
-from db import get_sqlite_conn
+from db import get_sqlite_conn, get_distinct_thread_ids
 from llm_openai import llm_gemini
 
 from google.oauth2.credentials import Credentials
@@ -26,6 +26,7 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_chroma import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.tools.retriever import create_retriever_tool
+
 
 class MyGraph():
 
@@ -42,6 +43,37 @@ class MyGraph():
             embedding_function=GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001"),
             persist_directory=cfg.VEC_DB_PATH
         )
+    
+    async def get_history(self):
+
+        chats = []
+        threads = await get_distinct_thread_ids()
+        for thread in threads:
+            conf = {"configurable": {"thread_id": thread}}
+            block = await self.memory.aget(conf)
+            history = block["channel_values"]["messages"]
+            if len(history) > 3:
+                chats.append(
+                    {
+                        "thread_id": thread,
+                        "message" : history[2]
+                    }
+                )
+            elif len(history) > 2:
+                chats.append(
+                    {
+                        "thread_id": thread,
+                        "message" : history[1]
+                    }
+                )
+            else:
+                chats.append(
+                    {
+                        "thread_id": thread,
+                        "message" : "New chat"
+                    }
+                )    
+        return chats        
     
 
     async def build_graph(self):
