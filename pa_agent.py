@@ -15,7 +15,7 @@ from langchain_google_community import GmailToolkit
 import config as cfg
 from mystate import MyState
 from db import get_sqlite_conn, get_distinct_thread_ids
-from llms import llm_gemini
+from llms import get_llm_gemini
 from logger_config import get_logger 
 from my_tools import get_tools
 logger = get_logger()
@@ -23,7 +23,7 @@ logger = get_logger()
 class MyGraph():
 
     def __init__(self):
-        self.llm = llm_gemini
+        self.llm = None
         self.llm_with_tools = None
         self.tools_binded = False
         self.memory = None
@@ -32,6 +32,7 @@ class MyGraph():
     
     async def build_graph(self):
         try:
+            self.llm = get_llm_gemini()
             mem = await get_sqlite_conn()
             self.memory = AsyncSqliteSaver(mem)
             graph_builder = StateGraph(MyState)
@@ -88,7 +89,8 @@ class MyGraph():
             logger.exception(e)
    
     async def get_chat_block(self, config):
-        return await self.graph.aget_state(config)
+        if self.graph:
+            return await self.graph.aget_state(config)
     
     async def rebuild_graph(self, gmail_token):
         self.gmail_token = gmail_token
