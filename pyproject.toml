@@ -25,4 +25,5 @@ dependencies = [
     "langchain-experimental==0.3.4",
     "loguru==0.7.3",
     "langchain-tavily==0.2.12",
+    "mcp[cli]==1.14.0"
 ]

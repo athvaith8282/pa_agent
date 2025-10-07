@@ -1501,6 +1501,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/04/7b/84b0dd4c2c5a499d2c5d63fb7a1224c25fc4c8b6c24623fa7a566471480d/mcp-1.14.0-py3-none-any.whl", hash = "sha256:b2d27feba27b4c53d41b58aa7f4d090ae0cb740cbc4e339af10f8cbe54c4e19d", size = 163805 },
 ]
 
+[package.optional-dependencies]
+cli = [
+    { name = "python-dotenv" },
+    { name = "typer" },
+]
+
 [[package]]
 name = "mdurl"
 version = "0.1.2"
@@ -2085,6 +2091,7 @@ dependencies = [
     { name = "langgraph" },
     { name = "langgraph-checkpoint-sqlite" },
     { name = "loguru" },
+    { name = "mcp", extra = ["cli"] },
     { name = "nest-asyncio" },
     { name = "pypdf" },
     { name = "python-dotenv" },
@@ -2109,6 +2116,7 @@ requires-dist = [
     { name = "langgraph", specifier = "==0.6.7" },
     { name = "langgraph-checkpoint-sqlite", specifier = "==2.0.11" },
     { name = "loguru", specifier = "==0.7.3" },
+    { name = "mcp", extras = ["cli"], specifier = "==1.14.0" },
     { name = "nest-asyncio", specifier = "==1.6.0" },
     { name = "pypdf", specifier = "==6.0.0" },
     { name = "python-dotenv", specifier = "==1.1.1" },
