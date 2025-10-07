@@ -38,6 +38,14 @@ MCP_CONFIG = {
 RETRIEVER_DATA_DIR = os.path.join(BASE_DIR, 'retriever/data')
 RETRIEVER_STATUS_FILE = os.path.join(RETRIEVER_DATA_DIR, "status_retriever.json")
 
+suggestions = [
+    "How to beat afternoon slump?",
+    "Who won F1 driver champion ship in 2024?",
+    "What is mean by langgraph ?",
+    "what is lactos intolerance ?",
+    "How to manage carvings ?"
+]
+
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(DB_DIR, exist_ok=True)
 os.makedirs(TOKEN_DIR, exist_ok=True)

@@ -25,6 +25,7 @@ from langchain_core.callbacks import adispatch_custom_event
 
 from langchain_mcp_adapters.client import MultiServerMCPClient 
 
+from datetime import datetime
 
 tavily_search = TavilySearch(
     max_results = 5
@@ -76,6 +77,14 @@ async def read_todos(state: Annotated[MyState, InjectedState]):
 
     return result.strip()
 
+@tool()
+async def date_tool():
+    """
+    Returns the current date/time
+    """
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d")
+
 async def get_tools(gmail_token = None):
     gmail_tools = []
     with open(cfg.RETRIEVER_STATUS_FILE, 'r') as f:
@@ -112,5 +121,5 @@ async def get_tools(gmail_token = None):
                 description=description
             )
     return [
-        tavily_search, read_todos, write_todos, retriever_tool
+        tavily_search, read_todos, write_todos, retriever_tool, date_tool
     ] + gmail_tools + f1_tools
