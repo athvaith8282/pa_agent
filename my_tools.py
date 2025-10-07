@@ -26,7 +26,9 @@ from langchain_core.callbacks import adispatch_custom_event
 from langchain_mcp_adapters.client import MultiServerMCPClient 
 
 from datetime import datetime
+import streamlit as st 
 
+os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY"]["TAVILY_API_KEY"]
 tavily_search = TavilySearch(
     max_results = 5
 )

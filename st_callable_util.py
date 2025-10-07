@@ -16,9 +16,9 @@ import os
 def get_langfuse_callback():
 
     langfuse = Langfuse(
-        secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
-        public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
-        host=os.getenv("LANGFUSE_HOST")
+        secret_key=st.secrets["LANGFUSE"]["LANGFUSE_SECRET_KEY"],
+        public_key=st.secrets["LANGFUSE"]["LANGFUSE_PUBLIC_KEY"],
+        host=st.secrets["LANGFUSE"]["LANGFUSE_HOST"]
     )
 
     langfuse_handler = CallbackHandler()

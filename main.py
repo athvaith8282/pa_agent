@@ -2,8 +2,8 @@ import streamlit as st
 import asyncio
 import nest_asyncio
 nest_asyncio.apply()
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 if "loop" not in st.session_state:
     st.session_state.loop = asyncio.new_event_loop()
@@ -43,14 +43,14 @@ if "GOOGLE_API_KEY" in st.session_state:
         st.session_state.graph = MyGraph()
         event_runner(st.session_state.graph.build_graph())
 
-    if "oauth" not in st.session_state:
-        st.session_state.oauth2 = OAuth2Component(
-                    client_id=os.getenv("CLIENT_ID"),
-                    client_secret=os.getenv("CLIENT_SECRET"),
-                    authorize_endpoint=cfg.GOOGLE_AUTHORIZE_URL,
-                    token_endpoint=cfg.GOOGLE_TOKEN_URL,
-                    refresh_token_endpoint=cfg.GOOGLE_REFRESH_TOKEN_URL
-                )
+    # if "oauth" not in st.session_state:
+    #     st.session_state.oauth2 = OAuth2Component(
+    #                 client_id=os.getenv("CLIENT_ID"),
+    #                 client_secret=os.getenv("CLIENT_SECRET"),
+    #                 authorize_endpoint=cfg.GOOGLE_AUTHORIZE_URL,
+    #                 token_endpoint=cfg.GOOGLE_TOKEN_URL,
+    #                 refresh_token_endpoint=cfg.GOOGLE_REFRESH_TOKEN_URL
+    #             )
 
     with st.sidebar:
         if st.button(
