@@ -23,4 +23,6 @@ dependencies = [
     "langchain-chroma==0.2.6",
     "pypdf>=6.0.0",
     "langchain-experimental>=0.3.4",
+    "loguru>=0.7.3",
+    "langchain-tavily>=0.2.12",
 ]
