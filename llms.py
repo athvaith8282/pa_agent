@@ -10,4 +10,4 @@ llm_gemini = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash"
 )
 
-llm_openai = ChatOpenAI(name="gpt-5",streaming=True)
+# llm_openai = ChatOpenAI(name="gpt-5",streaming=True)
