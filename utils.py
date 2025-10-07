@@ -35,18 +35,18 @@ def retry(max_attempts=3, delay=1, exceptions=(Exception,)):
 async def get_gmail_token():
     st.warning("⚠️ Please authorize Gmail access")
     # Show authorize button
-    result = st.session_state.oauth2.authorize_button(
-        name="🔐 Authorize Gmail",
-        redirect_uri=cfg.REDIRECT_URI,
-        scope=cfg.SCOPES,
-        key="gmail_auth",
-        use_container_width=True,
-        extras_params={"prompt": "consent", "access_type": "offline"}
-    )
+    # result = st.session_state.oauth2.authorize_button(
+    #     name="🔐 Authorize Gmail",
+    #     redirect_uri=cfg.REDIRECT_URI,
+    #     scope=cfg.SCOPES,
+    #     key="gmail_auth",
+    #     use_container_width=True,
+    #     extras_params={"prompt": "consent", "access_type": "offline"}
+    # )
     
-    if result and 'token' in result:
-        with open(cfg.TOKEN_PATH, 'w') as file:
-            json.dump(result["token"], file)
-        st.session_state.gmail_token = result['token']
-        await st.session_state.graph.rebuild_graph(st.session_state.gmail_token)
-        st.rerun()
+    # if result and 'token' in result:
+    #     with open(cfg.TOKEN_PATH, 'w') as file:
+    #         json.dump(result["token"], file)
+    #     st.session_state.gmail_token = result['token']
+    #     await st.session_state.graph.rebuild_graph(st.session_state.gmail_token)
+    #     st.rerun()

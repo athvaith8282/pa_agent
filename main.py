@@ -116,20 +116,21 @@ if "GOOGLE_API_KEY" in st.session_state:
         st.title("Chats:")
         with st.expander("Previous Conversations", expanded=True):
             chats = event_runner(st.session_state.graph.get_history())
-            for chat in chats:
-                thread_id = chat["thread_id"]
-                first_msg = chat["message"].content
-                display_text = (first_msg[:25] + "...") if len(first_msg) > 25 else first_msg
-                if st.button(display_text, key=thread_id, use_container_width=True):
-                    st.session_state.config = {"configurable": {"thread_id": thread_id}}
-                    current_state = event_runner(st.session_state.graph.get_chat_block(st.session_state.config))
-                    if current_state and current_state.values.get("messages"):
-                        st.session_state.messages = current_state.values["messages"]
-                    else:
-                        st.session_state.messages = [
-                            AIMessage(content="Sorry, Can't recieve past conversation")
-                        ]
-                    st.rerun()
+            if chats:
+                for chat in chats:
+                    thread_id = chat["thread_id"]
+                    first_msg = chat["message"].content
+                    display_text = (first_msg[:25] + "...") if len(first_msg) > 25 else first_msg
+                    if st.button(display_text, key=thread_id, use_container_width=True):
+                        st.session_state.config = {"configurable": {"thread_id": thread_id}}
+                        current_state = event_runner(st.session_state.graph.get_chat_block(st.session_state.config))
+                        if current_state and current_state.values.get("messages"):
+                            st.session_state.messages = current_state.values["messages"]
+                        else:
+                            st.session_state.messages = [
+                                AIMessage(content="Sorry, Can't recieve past conversation")
+                            ]
+                        st.rerun()
 
     if "config" not in st.session_state:
         thread_id = str(uuid.uuid4())
