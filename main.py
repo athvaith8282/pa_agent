@@ -36,7 +36,7 @@ event_runner = st.session_state.loop.run_until_complete
 if "GOOGLE_API_KEY" in st.session_state: 
     os.environ["GOOGLE_API_KEY"] = st.session_state.GOOGLE_API_KEY
     from pa_agent import MyGraph
-    from retriever.main import update_retriever
+    from retriever.retriever_main import update_retriever
 
 
     if "graph" not in st.session_state:

@@ -30,7 +30,7 @@ LOGS_PATH = os.path.join(LOGS_DIR, 'pa_agent.log')
 MCP_CONFIG = {
         "F1_MCP": {
             "command": "python3",
-            "args": ["my_mcp/main.py"],
+            "args": ["my_mcp/mcp_server.py"],
             "transport": "stdio",
         }
 }
