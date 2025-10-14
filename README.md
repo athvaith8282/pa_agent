@@ -424,7 +424,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 👤 Author
 
-**[Your Name]**
+**Athvaith**
 - GitHub: [@athvaith8282](https://github.com/athvaith8282)
 - LinkedIn: [Athvaith.K](https://www.linkedin.com/in/athvaith)
 - Email: athvaith.k@gmail.com
