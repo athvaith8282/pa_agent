@@ -1,1 +1,14 @@
-{}
+{
+    "/app/retriever/data/file_20251014_060305.pdf": {
+        "description": "10 Tips to Beat the Afternoon Slump and Stay Energized",
+        "status": "Done"
+    },
+    "/app/retriever/data/file_20251014_060344.pdf": {
+        "description": "The Healthy Eater Who Craves Junk Food: How to Manage Cravings",
+        "status": "Done"
+    },
+    "/app/retriever/data/file_20251014_060455.pdf": {
+        "description": "Are Dairy Foods Making You Sick? What to Do About Lactose Intolerance",
+        "status": "Done"
+    }
+}
