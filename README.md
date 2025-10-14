@@ -2,6 +2,10 @@
 
 A sophisticated AI-powered personal assistant built with LangGraph and Streamlit, featuring multi-tool integration, Gmail connectivity, and specialized F1 data capabilities.
 
+## 🔗 Live Demo
+
+Try it now on Streamlit Community: [PA Agent – Live Demo](https://personal-assistent.streamlit.app/)
+
 ## 🚀 Features
 
 ### Core Architecture
@@ -81,7 +85,9 @@ PA Agent
 
 2. **Set up secrets configuration**
    ```bash
-   Edit .streamlit/secrets.toml with your API keys
+   # Create secrets.toml file
+   cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+   # Edit .streamlit/secrets.toml with your API keys
    ```
    
    The `secrets.toml` file should contain:
@@ -120,7 +126,9 @@ PA Agent
 
 3. **Set up secrets configuration**
    ```bash
-   Edit .streamlit/secrets.toml with your API keys
+   # Create secrets.toml file
+   cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+   # Edit .streamlit/secrets.toml with your API keys
    ```
    
    **Note**: Google Gemini API key and Gmail OAuth credentials are configured through the Streamlit UI.
