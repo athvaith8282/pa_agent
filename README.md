@@ -422,6 +422,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## 👤 Author
+
+**[Your Name]**
+- GitHub: [@athvaith8282](https://github.com/athvaith8282)
+- LinkedIn: [Athvaith.K](https://www.linkedin.com/in/athvaith)
+- Email: athvaith.k@gmail.com
+
 ## 📞 Contact
 
 For questions or support, please open an issue in the repository.
