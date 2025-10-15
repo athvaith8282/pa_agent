@@ -25,7 +25,7 @@ logger = get_logger()
 
 
 
-st.title("PERSONAL ASSISTENT")
+st.title("PERSONAL ASSISTANT")
 
 st.set_page_config(
     page_title= "PA AGENT",
